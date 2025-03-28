@@ -14,17 +14,40 @@ namespace ProjectCinema.Repositories.Classes
 
         public async Task<IEnumerable<ShowTime>> GetShowTimesAsync(ShowTimeStatus? showTimeStatus = null)
         {
+
             var query = _dbSet.AsQueryable();
+
             if(showTimeStatus.HasValue)
             {
-                query = query.Where(s => s.ShowTimeStatus == showTimeStatus.Value);
+
+                query = query.AsNoTracking().Where(s => s.ShowTimeStatus == showTimeStatus.Value);
+
             }
-            return await query.ToListAsync();
+
+            return await query.Include(t => t.Tickets).ToListAsync();
+
         }
 
-        public async Task<IEnumerable<Ticket>> GetTicketsByShowTimeAsync(int id)
+        public async Task<IEnumerable<ShowTime>> GetShowTimesByMovieScreeningIdAsync(int id)
         {
-            return await _dbContext.Tickets.Where(t => t.ShowTimeId == id).ToListAsync();
+
+            return await _dbContext.ShowTimes
+                                    .AsNoTracking()
+                                    .Where(s => s.MovieScreeningId == id)
+                                    .Include(t => t.Tickets)
+                                    .ToListAsync();
+
+        }
+
+        public async Task<IEnumerable<ShowTime>> GetShowTimesByHallIdAsync(int id)
+        {
+
+            return await _dbContext.ShowTimes
+                                    .AsNoTracking()
+                                    .Where(s => s.HallId == id)
+                                    .Include(t => t.Tickets)
+                                    .ToListAsync();
+
         }
     }
 }

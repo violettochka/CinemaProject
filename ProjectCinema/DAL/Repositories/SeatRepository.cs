@@ -12,14 +12,21 @@ namespace ProjectCinema.Repositories.Classes
         {
         }
 
-        public async Task<IEnumerable<Seat>> GetSeatsAsync(SeatAvailability? seatAvailability = null)
+        public async Task<IEnumerable<Seat>> GetSeatsAvailibilityAsync(SeatAvailability? seatAvailability = null)
         {
             var query = _dbSet.AsQueryable();
             if (seatAvailability.HasValue)
             {
-                query = query.Where(s => s.SeatAvailability == seatAvailability.Value);
+                query = query.AsNoTracking().Where(s => s.SeatAvailability == seatAvailability.Value);
             }
             return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Seat>> GetSeatsByHallIdAsync(int id)
+        {
+
+            return await _dbContext.Seats.AsNoTracking().Where(s => s.HallId == id).ToListAsync();
+
         }
     }
 }

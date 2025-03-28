@@ -20,6 +20,8 @@ namespace ProjectCinema.Entities
         public Cinema Cinema { get; set; }
         [Required]
         public int CinemaId { get; set; }
+        [Required]
+        public DateTime CreatedAt { get; set; }
         public ICollection<ShowTime> ShowTimes { get; set; }
         public ICollection<Seat> Seats { get; set; }
     }

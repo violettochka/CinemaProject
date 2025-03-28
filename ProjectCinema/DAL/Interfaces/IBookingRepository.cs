@@ -1,9 +1,11 @@
-﻿using ProjectCinema.Entities;
+﻿using ProjectCinema.BLL.DTO.Booking;
+using ProjectCinema.Entities;
 
 namespace ProjectCinema.Repositories.Interfaces
 {
     public interface IBookingRepository : IGenericRepository<Booking>
     {
-        Task<IEnumerable<Ticket>> GetTicketsByBookingIdAsync(int id);
+        Task<IEnumerable<Booking>> GetBookingsByPromocodeIdAsync(int promocodeId);
+        Task<IEnumerable<Booking>> GetBookingsByUserIdAsync(int userId);
     }
 }

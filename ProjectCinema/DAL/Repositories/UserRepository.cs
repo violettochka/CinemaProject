@@ -14,7 +14,7 @@ namespace ProjectCinema.Repositories.Classes
 
         public async Task<IEnumerable<Booking>> GetBookingsByUserIdAsync(int id)
         {
-            return await _dbContext.Bookings.Where(b => b.UserId == id).ToListAsync();
+            return await _dbContext.Bookings.AsNoTracking().Where(b => b.UserId == id).ToListAsync();
         }
     }
 }

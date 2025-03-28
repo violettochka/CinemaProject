@@ -12,7 +12,7 @@ namespace ProjectCinema.MappingProfiles
             CreateMap<Cinema, CinemaDTO>();
 
             //Create automapper for details cinema info
-            CreateMap<Cinema, CinemsDetailsDTO>()
+            CreateMap<Cinema, CinemaDetailsDTO>()
                 .ForMember(dest => dest.Halls, opt => opt.MapFrom(src => src.Halls))
                 .ForMember(dest => dest.MovieScreenings, opt => opt.MapFrom(src => src.MovieScreenings));
 

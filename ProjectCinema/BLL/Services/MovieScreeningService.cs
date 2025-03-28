@@ -23,7 +23,7 @@ namespace ProjectCinema.BLL.Services
         }
         public async Task<MovieScreeningDTO> CreateAsync(MovieScreeningCreateDTO screeningDTO)
         {
-            var movieScreening = _mapper.Map<MovieScreening>(screeningDTO);
+            MovieScreening movieScreening = _mapper.Map<MovieScreening>(screeningDTO);
             movieScreening.CreatedAt = DateTime.Now;
             movieScreening.MovieScreeningRelevance = MovieScreeningRelevance.Relevant;
 
@@ -36,33 +36,44 @@ namespace ProjectCinema.BLL.Services
         public async Task<IEnumerable<MovieScreeningDTO>> GetMovieScreeningsByRelevanceAsync(MovieScreeningRelevance relevance)
         {
 
-            var movieScreenings = await _movieScreeningRepository.GetMovieScreeningsByRelevanceAsync(relevance);
+            IEnumerable<MovieScreening> movieScreenings = await _movieScreeningRepository.GetMovieScreeningsByRelevanceAsync(relevance);
 
             return _mapper.Map<List<MovieScreeningDTO>>(movieScreenings);
 
         }
+
 
         public async Task<IEnumerable<MovieScreeningDTO>> GetScreeningsByCinemaIdAsync(int cinemaId)
         {
 
-            var movieScreenings = await _movieScreeningRepository.GetMovieScreeningssByCimenaIdAsync(cinemaId);
+            IEnumerable<MovieScreening> movieScreenings = await _movieScreeningRepository.GetMovieScreeningsByCimenaIdAsync(cinemaId);
 
             return _mapper.Map<List<MovieScreeningDTO>>(movieScreenings);
 
         }
 
-        public async Task<IEnumerable<MovieScreeningDTO>> GetScreeningsByMovieIdAsync(int movieId)
+        public async Task<IEnumerable<MovieScreeningDTO>> GetMovieSreeningsByMovieIdAsync(int movieId)
         {
 
-            var movieScreenings = await _movieScreeningRepository.GetMovieSreeningsByMovieIdAsync(movieId);
+            IEnumerable<MovieScreening> movieScreenings = await _movieScreeningRepository.GetMovieSreeningsByMovieIdAsync(movieId);
 
             return _mapper.Map<IEnumerable<MovieScreeningDTO>>(movieScreenings);
 
         }
 
+        public async Task<IEnumerable<MovieScreeningDetailsDTO>> GetScreeningsDetailsByMovieIdAsync(int movieId)
+        {
+
+            IEnumerable<MovieScreening> movieScreenings = await _movieScreeningRepository.GetMovieSreeningsByMovieIdAsync(movieId);
+
+            return _mapper.Map<IEnumerable<MovieScreeningDetailsDTO>>(movieScreenings);
+
+        }
+
         public async Task<MovieScreeningDTO> UpdateAsync(int id, MovieScreeningUpdateDTO screeningDTO)
         {
-            var movieScreening = await  _movieScreeningRepository.GetByIdAsync(id);
+
+            MovieScreening movieScreening = await  _movieScreeningRepository.GetByIdAsync(id);
             _mapper.Map(screeningDTO, movieScreening);
             await _movieScreeningRepository.UpdateAsync(movieScreening);
             await _movieScreeningRepository.SaveAsync();

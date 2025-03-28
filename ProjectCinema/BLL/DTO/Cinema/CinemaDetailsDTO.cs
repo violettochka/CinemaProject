@@ -6,7 +6,7 @@ using ProjectCinema.BLL.DTO.Halls;
 
 namespace ProjectCinema.BLL.DTO.Cinema
 {
-    public class CinemsDetailsDTO
+    public class CinemaDetailsDTO
     {
         public int CinemaId { get; set; }
         public string? CinemaName { get; set; }

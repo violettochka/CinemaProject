@@ -14,7 +14,7 @@ namespace ProjectCinema.Repositories.Classes
 
         public async Task<IEnumerable<Booking>> GetBookingsByPromocodeIdAsync(int id)
         {
-            return await _dbContext.Bookings.Where(b => b.PromocodeId == id).ToListAsync();
+            return await _dbContext.Bookings.AsNoTracking().Where(b => b.PromocodeId == id).ToListAsync();
         }
 
         //public Task<List<Promocode>> GetPromocodesAsync(PromocodeType? promocodeType = null)
@@ -25,6 +25,11 @@ namespace ProjectCinema.Repositories.Classes
         //        query = query.Where(p => p.PromocodeType)
         //    }
         //}
+
+        public async Task<IEnumerable<Promocode>> GetPromocodesByActivityAsync(bool isActive)
+        {
+            return await _dbContext.Promocodes.AsNoTracking().Where(p => p.IsActive == isActive).ToListAsync();
+        }
     }
 }
 

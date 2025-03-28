@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjectCinema.Data;
 using ProjectCinema.Entities;
+using ProjectCinema.Enums;
 using ProjectCinema.Repositories.Interfaces;
 
 namespace ProjectCinema.Repositories.Classes
@@ -13,17 +14,22 @@ namespace ProjectCinema.Repositories.Classes
 
         public async Task<IEnumerable<Hall>> GetHAllsByCinemaIdAsync(int cinemaId)
         {
-            return await _dbContext.Halls.Where(h => h.CinemaId ==  cinemaId).ToListAsync();
+
+            return await _dbContext.Halls.AsNoTracking().Where(h => h.CinemaId ==  cinemaId).ToListAsync();
+
         }
 
-        public async Task<IEnumerable<Seat>> GetSeatByHallIdAsync(int id)
+        public async Task<IEnumerable<Hall>> GetHallsByAviliabilityAsync(HallAvailability? hallAvailability = null)
         {
-            return await _dbContext.Seats.Where(s => s.HallId == id).ToListAsync();
+
+            var query = _dbSet.AsQueryable();
+            if (hallAvailability.HasValue)
+            {
+                query = query.AsNoTracking().Where(h => h.HallAvailability == hallAvailability.Value);
+            }
+
+            return await query.ToListAsync();
         }
 
-        public async Task<IEnumerable<ShowTime>> GetShowTimesByHallIdAsync(int id)
-        {
-            return await _dbContext.ShowTimes.Where(s => s.HallId == id).ToListAsync();
-        }
     }
 }

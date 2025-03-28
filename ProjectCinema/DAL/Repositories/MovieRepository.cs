@@ -18,7 +18,7 @@ namespace ProjectCinema.Repositories.Classes
 
             if (movieStatus.HasValue)
             {
-                query = query.Where(m => m.Status == movieStatus.Value);
+                query = query.AsNoTracking().Where(m => m.Status == movieStatus.Value);
             }
             return await query.ToListAsync();
         }

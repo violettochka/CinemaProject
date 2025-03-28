@@ -8,36 +8,46 @@ namespace ProjectCinema.Repositories.Classes
 {
     public class MovieScreeningRepository : GenericRepository<MovieScreening>, IMovieScreeningRepository
     {
+
         public MovieScreeningRepository(AplicationDBContext context) : base(context)
         {
         }
 
         public async Task<IEnumerable<MovieScreening>> GetMovieScreeningsByRelevanceAsync(
-                                                MovieScreeningRelevance? movieScreeningRelevance = null)
+                                                       MovieScreeningRelevance? movieScreeningRelevance = null)
         {
+
             var query = _dbSet.AsQueryable();
 
             if (movieScreeningRelevance.HasValue)
             {
-                query = query.Where(m => m.MovieScreeningRelevance == movieScreeningRelevance.Value);
+                query = query.AsNoTracking().Where(m => m.MovieScreeningRelevance == movieScreeningRelevance.Value);
             }
 
-            return await query.ToListAsync();
+            return await query.Include(m => m.ShowTimes).ToListAsync();
+
         }
 
-        public async Task<IEnumerable<ShowTime>> GetShowTimesByMovieScreeningIdAsync(int id)
-        {
-            return await _dbContext.ShowTimes.Where(s => s.MovieScreeningId == id).ToListAsync();
-        }
 
         public async Task<IEnumerable<MovieScreening>> GetMovieSreeningsByMovieIdAsync(int movieId)
         {
-            return await _dbContext.MovieScreenings.Where(mv => mv.MovieId == movieId).ToListAsync();
+
+            return await _dbContext.MovieScreenings
+                                   .AsNoTracking()
+                                   .Where(mv => mv.MovieId == movieId)
+                                   .Include(m => m.ShowTimes)
+                                   .ToListAsync();
         }
 
-        public async Task<IEnumerable<MovieScreening>> GetMovieScreeningssByCimenaIdAsync(int id)
+        public async Task<IEnumerable<MovieScreening>> GetMovieScreeningsByCimenaIdAsync(int id)
         {
-            return await _dbContext.MovieScreenings.Where(m => m.CinemaId == id).ToListAsync();
+            
+            return await _dbContext.MovieScreenings
+                                   .AsNoTracking()
+                                   .Where(m => m.CinemaId == id)
+                                   .Include(m => m.ShowTimes)
+                                   .ToListAsync();
+
         }
 
     }

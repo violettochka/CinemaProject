@@ -14,26 +14,26 @@ namespace ProjectCinema.BLL.Services
 
         private readonly ICinemaRepository _cinemaRepository;
         private readonly IMovieScreeningService _movieScreeningService;
-        private readonly IHallRepository _hallRepository;
+        private readonly IHallService _hallService;
         private readonly IMapper _mapper;
 
         public CinemaService(ICinemaRepository cinemaRepository, 
                             IMovieScreeningService movieScreeningService,
-                            IHallRepository hallRepository, 
+                            IHallService hallService, 
                             IMapper mapper)
                             :base(cinemaRepository, mapper)
         {
 
             _cinemaRepository = cinemaRepository;
             _movieScreeningService = movieScreeningService;
-            _hallRepository = hallRepository;
+            _hallService = hallService;
             _mapper = mapper;
 
         }
         public async Task<CinemaDTO> CreateAsync(CinemaCreateDTO cinemaDTO)
         {
 
-            var cinema = _mapper.Map<Cinema>(cinemaDTO);
+            Cinema cinema = _mapper.Map<Cinema>(cinemaDTO);
             cinema.CreatedAt = DateTime.Now;
             await _cinemaRepository.AddAsync(cinema);
             await _cinemaRepository.SaveAsync();
@@ -42,16 +42,16 @@ namespace ProjectCinema.BLL.Services
 
         }
 
-        public async Task<CinemsDetailsDTO> GetCinemaDetailsAsync(int id)
+        public async Task<CinemaDetailsDTO> GetCinemaDetailsAsync(int id)
         {
 
-            var cinema = await _cinemaRepository.GetByIdAsync(id);
-            var movieScreeings = await _movieScreeningService.GetScreeningsByCinemaIdAsync(id);
-            var halls = await _hallRepository.GetHAllsByCinemaIdAsync(id);
+            Cinema cinema = await _cinemaRepository.GetByIdAsync(id);
+            IEnumerable<MovieScreeningDTO> movieScreeings = await _movieScreeningService.GetScreeningsByCinemaIdAsync(id);
+            IEnumerable<HallDTO> halls = await _hallService.GetHallsByCinemaIdAsync(id);
 
-            var cinemaDTO = _mapper.Map<CinemsDetailsDTO>(cinema);
+            CinemaDetailsDTO cinemaDTO = _mapper.Map<CinemaDetailsDTO>(cinema);
             cinemaDTO.MovieScreenings = _mapper.Map<List<MovieScreeningDTO>>(movieScreeings);
-            cinemaDTO.Halls = _mapper.Map<List<HallDTO>>(halls);
+            cinemaDTO.Halls = halls.ToList();
 
             return cinemaDTO;
         }
@@ -59,7 +59,7 @@ namespace ProjectCinema.BLL.Services
         public async Task<CinemaDTO> UpdateAsync(int id, CinemaDTO cinemaDTO)
         {
 
-            var cinema = await _cinemaRepository.GetByIdAsync(id);
+            Cinema cinema = await _cinemaRepository.GetByIdAsync(id);
             _mapper.Map(cinemaDTO, cinema);
             await _cinemaRepository.UpdateAsync(cinema);
             await _cinemaRepository.SaveAsync();

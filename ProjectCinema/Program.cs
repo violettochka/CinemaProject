@@ -1,6 +1,9 @@
 
 using Microsoft.EntityFrameworkCore;
+using ProjectCinema.DAL.Interfaces;
 using ProjectCinema.Data;
+using ProjectCinema.Repositories.Classes;
+using ProjectCinema.Repositories.Interfaces;
 
 namespace ProjectCinema
 {
@@ -15,6 +18,18 @@ namespace ProjectCinema
             //add DbContext conteiner into dependencies
             builder.Services.AddDbContext<AplicationDBContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            //Add repositories
+            builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+            builder.Services.AddScoped<ICinemaRepository, CinemaRepository>();
+            builder.Services.AddScoped<IHallRepository, HallRepository>();
+            builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+            builder.Services.AddScoped<IMovieScreeningRepository, MovieScreeningRepository>();
+            builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+            builder.Services.AddScoped<IPromocodeRepository, PromocodeRepository>();
+            builder.Services.AddScoped<ISeatRepository, SeatRepository>();
+            builder.Services.AddScoped<IShowTimeRepository, ShowTimeRepository>();
+            builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 
 
             builder.Services.AddControllers();

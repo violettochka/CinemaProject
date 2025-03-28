@@ -18,7 +18,7 @@ namespace ProjectCinema.BLL.Services
         public async Task<IEnumerable<TDTO>> GetAllAsync()
         {
 
-            var entities = await _genericRepository.GetAllAsync();
+            IEnumerable<TEntity> entities = await _genericRepository.GetAllAsync();
 
             return _mapper.Map<IEnumerable<TDTO>>(entities);
 
@@ -27,7 +27,7 @@ namespace ProjectCinema.BLL.Services
         public async Task<TDTO> GetByIdAsync(int entityId)
         {
 
-            var etity = await _genericRepository.GetByIdAsync(entityId);
+            TEntity etity = await _genericRepository.GetByIdAsync(entityId);
 
             return _mapper.Map<TDTO>(etity);
 

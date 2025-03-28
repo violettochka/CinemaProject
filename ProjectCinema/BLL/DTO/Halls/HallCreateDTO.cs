@@ -14,7 +14,6 @@ namespace ProjectCinema.BLL.DTO.Halls
         [Required]
         [Range(1, int.MaxValue)]
         public int Capacity { get; set; }
-        public HallAvailability HallAvailability { get; set; }
         [Required]
         public int CinemaId { get; set; }
     }

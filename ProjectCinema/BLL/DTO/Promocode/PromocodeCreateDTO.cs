@@ -13,6 +13,5 @@ namespace ProjectCinema.BLL.DTO.Promocode
         public decimal? PromocodeAmount { get; set; }
         public DateTime? ExpiryDate { get; set; }
         public string? Condition { get; set; }
-        public List<int>? BookingIds { get; set; }
     }
 }

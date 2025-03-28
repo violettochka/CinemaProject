@@ -14,7 +14,7 @@ namespace ProjectCinema.Repositories.Classes
         public async Task<IEnumerable<Hall>> GetHallsByCinemaIdAsync(int id)
         {
 
-            return await _dbContext.Halls.Where(h => h.CinemaId == id).ToListAsync();
+            return await _dbContext.Halls.AsNoTracking().Where(h => h.CinemaId == id).ToListAsync();
 
         }
     }

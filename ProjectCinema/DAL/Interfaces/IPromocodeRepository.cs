@@ -7,5 +7,6 @@ namespace ProjectCinema.Repositories.Interfaces
     {
         Task<IEnumerable<Booking>> GetBookingsByPromocodeIdAsync(int id);
         //Task<List<Promocode>> GetPromocodesAsync(PromocodeType? promocodeType = null);
+        Task<IEnumerable<Promocode>> GetPromocodesByActivityAsync(bool isActive);
     }
 }

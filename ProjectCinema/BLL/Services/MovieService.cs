@@ -14,23 +14,23 @@ namespace ProjectCinema.BLL.Services
     public class MovieService : GenericService<MovieDTO, Movie>, IMovieService
     {
 
-        private readonly IMovieScreeningRepository _screeningRepository;
+        private readonly IMovieScreeningService _screeningService;
         private readonly IMovieRepository _movieRepository;
         private readonly IMapper _mapper;
         public MovieService(IMovieRepository movieRepository, 
-                            IMapper mapper, 
-                            IMovieScreeningRepository screeningRepository)
+                            IMapper mapper,
+                            IMovieScreeningService screeningService)
                             :base(movieRepository, mapper)
         {
             _mapper = mapper;
             _movieRepository = movieRepository;
-            _screeningRepository = screeningRepository;
+            _screeningService = screeningService;
 
         }
         public async Task<MovieDTO> CreateAsync(MovieCreateDTO movieDTO)
         {
 
-            var movie = _mapper.Map<Movie>(movieDTO);
+            Movie movie = _mapper.Map<Movie>(movieDTO);
             movie.Status = StatusOfMovie.Active;
             movie.CreatedAt = DateTime.Now;
             await _movieRepository.AddAsync(movie);
@@ -42,7 +42,7 @@ namespace ProjectCinema.BLL.Services
         public async Task<IEnumerable<MovieDTO>> GetMoviesByStatusAsync(StatusOfMovie statusOfMovie)
         {
 
-            var movies  = await _movieRepository.GetMoviesByStatusAsync(statusOfMovie);
+            IEnumerable<Movie> movies  = await _movieRepository.GetMoviesByStatusAsync(statusOfMovie);
 
             return _mapper.Map<IEnumerable<MovieDTO>>(movies);
 
@@ -51,10 +51,10 @@ namespace ProjectCinema.BLL.Services
         public async Task<MovieDetailsDTO> GetMovieDetailsAsync(int id)
         {
 
-            var movie = await _movieRepository.GetByIdAsync(id);
-            var movieScreenings = await _screeningRepository.GetMovieSreeningsByMovieIdAsync(movie.MovieId);
-            var movieDto = _mapper.Map<MovieDetailsDTO>(movie);
-            movieDto.MovieScreenings = _mapper.Map<List<MovieScreeningDTO>>(movieScreenings);
+            Movie movie = await _movieRepository.GetByIdAsync(id);
+            IEnumerable<MovieScreeningDTO> movieScreenings = await _screeningService.GetMovieSreeningsByMovieIdAsync(movie.MovieId);
+            MovieDetailsDTO movieDto = _mapper.Map<MovieDetailsDTO>(movie);
+            movieDto.MovieScreenings = movieScreenings.ToList();
 
             return movieDto;
 
@@ -63,7 +63,7 @@ namespace ProjectCinema.BLL.Services
         public async Task<MovieDTO> UpdateAsync(int id, MovieUpdateDTO movieDTO)
         {
 
-            var movie = await _movieRepository.GetByIdAsync(id);
+            Movie movie = await _movieRepository.GetByIdAsync(id);
             _mapper.Map(movieDTO, movie);
             await _movieRepository.UpdateAsync(movie);
             await _movieRepository.SaveAsync();

@@ -10,7 +10,8 @@ namespace ProjectCinema.BLL.Interfaces
         Task<MovieScreeningDTO> CreateAsync(MovieScreeningCreateDTO screeningDTO); 
         Task<MovieScreeningDTO> UpdateAsync(int id, MovieScreeningUpdateDTO screeningDTO);
         Task<IEnumerable<MovieScreeningDTO>> GetScreeningsByCinemaIdAsync(int cinemaId);
-        Task<IEnumerable<MovieScreeningDTO>> GetScreeningsByMovieIdAsync(int movieId);
+        Task<IEnumerable<MovieScreeningDTO>> GetMovieSreeningsByMovieIdAsync(int movieId);
+        Task<IEnumerable<MovieScreeningDetailsDTO>> GetScreeningsDetailsByMovieIdAsync(int movieId);
 
     }
 }
