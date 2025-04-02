@@ -50,5 +50,20 @@ namespace ProjectCinema.Repositories.Classes
 
         }
 
+        public async Task<bool> IsMovieScreeningExistsByCinemaAndMovieAsync(int cinemaId, int movieId)
+        {
+
+            return await _dbContext.MovieScreenings.AnyAsync(ms => ms.CinemaId == cinemaId && ms.MovieId == movieId);
+
+        }
+
+        public async Task<IEnumerable<MovieScreening>> GetOverlappingScreeningsAsync(int cinemaId, DateTime startTime, DateTime endTime)
+        {
+            return await _dbContext.MovieScreenings
+                .Where(ms => ms.CinemaId == cinemaId &&
+                             ms.StartDate < endTime &&  // Если начало скрининга до конца нового
+                             ms.EndDate > startTime)    // Если конец скрининга после начала нового
+                .ToListAsync();
+        }
     }
 }

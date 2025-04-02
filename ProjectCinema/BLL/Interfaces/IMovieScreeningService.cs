@@ -1,4 +1,5 @@
-﻿using ProjectCinema.BLL.DTO.MovieScreening;
+﻿using Microsoft.EntityFrameworkCore;
+using ProjectCinema.BLL.DTO.MovieScreening;
 using ProjectCinema.Entities;
 using ProjectCinema.Enums;
 
@@ -12,6 +13,8 @@ namespace ProjectCinema.BLL.Interfaces
         Task<IEnumerable<MovieScreeningDTO>> GetScreeningsByCinemaIdAsync(int cinemaId);
         Task<IEnumerable<MovieScreeningDTO>> GetMovieSreeningsByMovieIdAsync(int movieId);
         Task<IEnumerable<MovieScreeningDetailsDTO>> GetScreeningsDetailsByMovieIdAsync(int movieId);
+        Task<bool> IsMovieScreeningExistsByCinemaAndMovieAsync(int cinemaId, int movieId);
+        Task<IEnumerable<MovieScreeningDTO>> GetOverlappingScreeningsAsync(int cinemaId, DateTime startTime, DateTime endTime);
 
     }
 }

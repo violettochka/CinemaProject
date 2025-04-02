@@ -19,5 +19,7 @@ namespace ProjectCinema.BLL.DTO.ShowTime
         public ICollection<TicketDTO>? Tickets { get; set; }
         public MovieScreeningDTO? MovieScreening { get; set; }
         public HallDTO? Hall { get; set; }
+        public int HallId { get; set; }
+        public int MovieScreeningId { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using ProjectCinema.BLL.DTO.Promocode;
 using ProjectCinema.BLL.Interfaces;
 using ProjectCinema.Entities;
+using ProjectCinema.Enums;
 using ProjectCinema.Repositories.Interfaces;
 
 namespace ProjectCinema.BLL.Services
@@ -22,6 +23,24 @@ namespace ProjectCinema.BLL.Services
         public async Task<PromocodeDTO> CreatePromocodeAsync(PromocodeCreateDTO promocodeCreateDTO)
         {
 
+            Promocode? existingPromocode = await _promocodeRepository.GetPromocodeByUniqueCodeAsync(promocodeCreateDTO.UniqueCode);
+
+            if (existingPromocode != null)
+            {
+                throw new ArgumentException("A promocode with this unique code already exists.");
+            }
+
+            if (promocodeCreateDTO.ExpiryDate <= DateTime.Now)
+            {
+                throw new ArgumentException("The expiration date of the promo code must be in the future.");
+            }
+
+            if (!Enum.IsDefined(typeof(PromocodeType), promocodeCreateDTO.PromocodeType))
+            {
+                throw new ArgumentException("Invalid promocode type.");
+            }
+
+
             Promocode promocode = _mapper.Map<Promocode>(promocodeCreateDTO);
             promocode.IsActive = true;
             promocode.CreatedAdt = DateTime.Now;
@@ -35,6 +54,10 @@ namespace ProjectCinema.BLL.Services
 
         public async Task<PromocodeDetailsDTO> GetPromocodeDetailsByIdAsync(int promocodeId)
         {
+            if (await _promocodeRepository.GetByIdAsync(promocodeId) == null)
+            {
+                throw new ArgumentException ($"Promocode with id equal {promocodeId} does not exists");
+            }
 
             Promocode promocode = await _promocodeRepository.GetByIdAsync(promocodeId);
 
@@ -45,13 +68,19 @@ namespace ProjectCinema.BLL.Services
         public async Task<IEnumerable<PromocodeDTO>> GetPromocodesByActivityAsync(bool isActive)
         {
 
-            IEnumerable<Promocode> promocode = await _promocodeRepository.GetPromocodesByActivityAsync(isActive);
+            IEnumerable<Promocode>? promocode = await _promocodeRepository.GetPromocodesByActivityAsync(isActive);
 
             return _mapper.Map<IEnumerable<PromocodeDTO>>(promocode);
         }
 
         public async Task<PromocodeDTO> UpdatePromocodeAsync(PromocodeUpdateDTO promocodeUpdateDTO, int promocodeId)
         {
+
+            if (await _promocodeRepository.GetByIdAsync(promocodeId) == null)
+            {
+                throw new ArgumentException($"Promocode with id equal {promocodeId} does not exists");
+            }
+
             Promocode promocode = await _promocodeRepository.GetByIdAsync(promocodeId);
             _mapper.Map(promocodeUpdateDTO, promocode);
 

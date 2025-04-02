@@ -5,6 +5,7 @@ using ProjectCinema.BLL.DTO.MovieScreening;
 using ProjectCinema.BLL.Interfaces;
 using ProjectCinema.Entities;
 using ProjectCinema.Repositories.Interfaces;
+using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 
 namespace ProjectCinema.BLL.Services
@@ -45,7 +46,13 @@ namespace ProjectCinema.BLL.Services
         public async Task<CinemaDetailsDTO> GetCinemaDetailsAsync(int id)
         {
 
-            Cinema cinema = await _cinemaRepository.GetByIdAsync(id);
+            Cinema? cinema = await _cinemaRepository.GetByIdAsync(id);
+
+            if(cinema == null)
+            {
+                throw new InvalidOperationException($"Cinema with id equals {id} does not exists");
+            }
+            
             IEnumerable<MovieScreeningDTO> movieScreeings = await _movieScreeningService.GetScreeningsByCinemaIdAsync(id);
             IEnumerable<HallDTO> halls = await _hallService.GetHallsByCinemaIdAsync(id);
 
@@ -59,7 +66,13 @@ namespace ProjectCinema.BLL.Services
         public async Task<CinemaDTO> UpdateAsync(int id, CinemaDTO cinemaDTO)
         {
 
-            Cinema cinema = await _cinemaRepository.GetByIdAsync(id);
+            Cinema? cinema = await _cinemaRepository.GetByIdAsync(id);
+
+            if (cinema == null)
+            {
+                throw new InvalidOperationException($"Cinema with id equals {id} does not exists");
+            }
+
             _mapper.Map(cinemaDTO, cinema);
             await _cinemaRepository.UpdateAsync(cinema);
             await _cinemaRepository.SaveAsync();

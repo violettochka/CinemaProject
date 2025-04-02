@@ -17,6 +17,11 @@ namespace ProjectCinema.Repositories.Classes
             return await _dbContext.Bookings.AsNoTracking().Where(b => b.PromocodeId == id).ToListAsync();
         }
 
+        public async Task<Promocode> GetPromocodeByUniqueCodeAsync(string uniqueCode)
+        {
+            return await _dbContext.Promocodes.FirstOrDefaultAsync(uc => uc.UniqueCode == uniqueCode);
+        }
+
         //public Task<List<Promocode>> GetPromocodesAsync(PromocodeType? promocodeType = null)
         //{
         //    var query = _dbSet.AsQueryable();

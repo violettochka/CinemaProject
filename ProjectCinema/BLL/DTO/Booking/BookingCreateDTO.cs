@@ -10,8 +10,8 @@ namespace ProjectCinema.BLL.DTO.Booking
 
         [Required]
         public int UserId { get; set; }
-
-        public int? PaymentId { get; set; }
+        [Required]
+        public int PaymentId { get; set; }
         public int? PromocodeId { get; set; }
     }
 }

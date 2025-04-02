@@ -15,11 +15,13 @@ namespace ProjectCinema.BLL.Services
         private readonly IMapper _mapper;
         private readonly ISeatService _seatService;
         private readonly IShowTimeService _showTimeService;
+        private readonly ICinemaService _cinemaService;
 
         public HallService(IHallRepository hallRepository, 
                            IMapper mapper, 
                            ISeatService seatService, 
-                           IShowTimeService showTimeService) 
+                           IShowTimeService showTimeService,
+                           ICinemaService cinemaService) 
                            : base(hallRepository, mapper)
         {
 
@@ -27,6 +29,7 @@ namespace ProjectCinema.BLL.Services
             _mapper = mapper;
             _seatService = seatService;
             _showTimeService = showTimeService;
+            _cinemaService = cinemaService;
 
         }
 
@@ -46,7 +49,13 @@ namespace ProjectCinema.BLL.Services
         public async Task<HallDetailsDTO> GetHallDetailsAsync(int hallId)
         {
 
-            Hall hall = await _hallRepository.GetByIdAsync(hallId);
+            Hall? hall = await _hallRepository.GetByIdAsync(hallId);
+
+            if(hall == null)
+            {
+                throw new InvalidOperationException($"Hall with id equals {hallId} does not exists");
+            }
+
             IEnumerable<SeatDTO> seats = await _seatService.GetSeatsByHallIdAsync(hallId);
             IEnumerable<ShowTimeDTO> showTimes = await _showTimeService.GetShowTimesByHallIdAsync(hallId);
 
@@ -69,6 +78,10 @@ namespace ProjectCinema.BLL.Services
 
         public async Task<IEnumerable<HallDTO>> GetHallsByCinemaIdAsync(int cinemaId)
         {
+            if(await _cinemaService.GetByIdAsync(cinemaId) == null)
+            {
+                throw new InvalidOperationException($"Cinema with id equals {cinemaId} does not exists")
+            }
 
             IEnumerable<Hall> halls = await _hallRepository.GetHAllsByCinemaIdAsync(cinemaId);
 
@@ -79,7 +92,13 @@ namespace ProjectCinema.BLL.Services
         public async Task<HallDTO> UpdateHallAsync(HallUpdateDTO hallUpdateDTO, int hallId)
         {
 
-            Hall hall = await _hallRepository.GetByIdAsync(hallId);
+            Hall? hall = await _hallRepository.GetByIdAsync(hallId);
+
+            if (hall == null)
+            {
+                throw new InvalidOperationException($"Hall with id equals {hallId} does not exists");
+            }
+
             _mapper.Map(hallUpdateDTO, hall);
             await _hallRepository.UpdateAsync(hall);
             await _hallRepository.SaveAsync();

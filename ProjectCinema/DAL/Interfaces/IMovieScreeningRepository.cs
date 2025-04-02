@@ -9,5 +9,8 @@ namespace ProjectCinema.Repositories.Interfaces
 
         Task<IEnumerable<MovieScreening>> GetMovieSreeningsByMovieIdAsync(int movieId);
         Task<IEnumerable<MovieScreening>> GetMovieScreeningsByCimenaIdAsync(int cinemaId);
+
+        Task<bool> IsMovieScreeningExistsByCinemaAndMovieAsync(int cinemaId, int movieId);
+        Task<IEnumerable<MovieScreening>> GetOverlappingScreeningsAsync(int cinemaId, DateTime startTime, DateTime endTime);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjectCinema.Data;
 using ProjectCinema.Repositories.Interfaces;
+using System.Linq.Expressions;
 
 namespace ProjectCinema.Repositories.Classes
 {
@@ -45,6 +46,10 @@ namespace ProjectCinema.Repositories.Classes
             await Task.CompletedTask;
         }
 
+        public async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbContext.Set<T>().FirstOrDefaultAsync(predicate);
+        }
         public async Task SaveAsync()
         {
             await _dbContext.SaveChangesAsync();

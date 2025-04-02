@@ -1,5 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
+using ProjectCinema.BLL.Interfaces;
+using ProjectCinema.BLL.Services;
 using ProjectCinema.DAL.Interfaces;
 using ProjectCinema.Data;
 using ProjectCinema.Repositories.Classes;
@@ -30,6 +32,22 @@ namespace ProjectCinema
             builder.Services.AddScoped<ISeatRepository, SeatRepository>();
             builder.Services.AddScoped<IShowTimeRepository, ShowTimeRepository>();
             builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+
+            //Add services
+            builder.Services.AddScoped<IBookingService, BookingService>();
+            builder.Services.AddScoped<ICinemaService, CinemaService>();
+            builder.Services.AddScoped<IHallService, HallService>();
+            builder.Services.AddScoped<IMovieService, MovieService>();
+            builder.Services.AddScoped<IMovieScreeningService, MovieScreeningService>();
+            builder.Services.AddScoped<IPaymentService,  PaymentService>();
+            builder.Services.AddScoped<IPromocodeService, PromocodeService>();
+            builder.Services.AddScoped<ISeatService,  SeatService>();
+            builder.Services.AddScoped<IShowTimeService,  ShowTimeService>();
+            builder.Services.AddScoped<ITicketService, TicketService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+
 
 
             builder.Services.AddControllers();

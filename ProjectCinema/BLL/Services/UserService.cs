@@ -7,11 +7,11 @@ using ProjectCinema.Repositories.Interfaces;
 
 namespace ProjectCinema.BLL.Services
 {
-    public class UserCervice : GenericService<UserDTO, User>, IUserService
+    public class UserService : GenericService<UserDTO, User>, IUserService
     {
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
-        public UserCervice(IUserRepository userRepository, IMapper mapper) : base(userRepository, mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper) : base(userRepository, mapper)
         {
             _userRepository = userRepository;
             _mapper = mapper;

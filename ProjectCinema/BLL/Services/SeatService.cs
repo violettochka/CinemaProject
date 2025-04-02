@@ -38,6 +38,28 @@ namespace ProjectCinema.BLL.Services
         public async Task<SeatDTO> CreateSeatAsync(SeatCreateDTO seatCreateDTO)
         {
 
+            if( await _hallService.GetByIdAsync(seatCreateDTO.HallId) == null)
+            {
+                throw new Exception($"Hall with id equal {seatCreateDTO.HallId} does not exists");
+            }
+
+            var existingSeat = (await _seatRepository.GetAllAsync())
+                                                     .FirstOrDefault(s => s.HallId == seatCreateDTO.HallId
+                                                      && s.RowNumber == seatCreateDTO.RowNumber
+                                                      && s.SeatNumber == seatCreateDTO.SeatNumber);
+
+
+            if (existingSeat != null)
+            {
+                throw new InvalidOperationException($"Seat number {seatCreateDTO.SeatNumber} in row {seatCreateDTO.RowNumber} already exists in this hall.");
+            }
+
+            // 4. Проверка корректности типа сиденья
+            if (!Enum.IsDefined(typeof(SeatType), seatCreateDTO.SeatType))
+            {
+                throw new ArgumentException("Incorrect seat type.");
+            }
+
             var seat = _mapper.Map<Seat>(seatCreateDTO);
             seat.CreatedAt = DateTime.Now;
             seat.SeatAvailability = SeatAvailability.Available;
@@ -50,6 +72,11 @@ namespace ProjectCinema.BLL.Services
 
         public async Task<SeatDetailsDTO> GetSeatDetailsAsync(int seatId)
         {
+
+            if( await _seatRepository.GetByIdAsync(seatId) == null )
+            {
+                throw new InvalidOperationException($"Seat with id equal {seatId} does not exists");
+            }
             
             Seat seat = await _seatRepository.GetByIdAsync(seatId);
             SeatDetailsDTO seatDTO = _mapper.Map<SeatDetailsDTO>(seat);
@@ -62,13 +89,12 @@ namespace ProjectCinema.BLL.Services
 
         public async Task<IEnumerable<SeatDTO>> GetSeatsByHallIdAsync(int hallId)
         {
-
-            IEnumerable<Seat> seats = await _seatRepository.GetSeatsByHallIdAsync(hallId);
-
-            if(seats == null)
+            if(await _hallService.GetByIdAsync(hallId) == null)
             {
-                throw new Exception($"Seats has not be found by hall id that equals {hallId}");
+                throw new InvalidOperationException($"Hall with id equal {hallId} does not exists");
             }
+
+            IEnumerable<Seat>? seats = await _seatRepository.GetSeatsByHallIdAsync(hallId);
 
             return _mapper.Map<IEnumerable<SeatDTO>>(seats);
 
@@ -79,12 +105,13 @@ namespace ProjectCinema.BLL.Services
 
             ShowTimeDetailsDTO showTime = await _showTimeService.GetShowTimeDetailsAsync(showTimeId);
 
-            if (showTime?.Hall == null)
+
+            if (showTime == null)
             {
-                throw new Exception("ShowTime or Hall have not found");
+                throw new Exception($"ShowTime with id equal {showTimeId} does not exist");
             }
 
-            List<SeatDTO> seats = (await GetSeatsByHallIdAsync(showTime.Hall.HallId)).ToList();
+            List<SeatDTO> seats = (await GetSeatsByHallIdAsync(showTime.HallId)).ToList();
 
             if (seatAvailability.HasValue)
             {

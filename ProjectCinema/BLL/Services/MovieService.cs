@@ -51,6 +51,11 @@ namespace ProjectCinema.BLL.Services
         public async Task<MovieDetailsDTO> GetMovieDetailsAsync(int id)
         {
 
+            if(_movieRepository.GetByIdAsync(id) == null)
+            {
+                throw new Exception($"Movie id equal {id} does not exists");
+            }
+
             Movie movie = await _movieRepository.GetByIdAsync(id);
             IEnumerable<MovieScreeningDTO> movieScreenings = await _screeningService.GetMovieSreeningsByMovieIdAsync(movie.MovieId);
             MovieDetailsDTO movieDto = _mapper.Map<MovieDetailsDTO>(movie);
@@ -62,6 +67,11 @@ namespace ProjectCinema.BLL.Services
 
         public async Task<MovieDTO> UpdateAsync(int id, MovieUpdateDTO movieDTO)
         {
+
+            if (_movieRepository.GetByIdAsync(id) == null)
+            {
+                throw new Exception($"Movie id equal {id} does not exists");
+            }
 
             Movie movie = await _movieRepository.GetByIdAsync(id);
             _mapper.Map(movieDTO, movie);
