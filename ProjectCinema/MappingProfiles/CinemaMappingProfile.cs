@@ -20,7 +20,8 @@ namespace ProjectCinema.MappingProfiles
             CreateMap<CinemaCreateDTO, Cinema>();
 
             //Create automapper for updating the cinema
-            CreateMap<CinemaUpdateDTO, Cinema>();
+            CreateMap<CinemaUpdateDTO, Cinema>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); 
 
         }
     }

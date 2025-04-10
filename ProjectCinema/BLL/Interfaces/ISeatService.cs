@@ -9,7 +9,7 @@ namespace ProjectCinema.BLL.Interfaces
         Task<SeatDetailsDTO> GetSeatDetailsAsync(int seatId);
         Task<SeatDTO> CreateSeatAsync(SeatCreateDTO seatCreateDTO);
         Task<SeatDTO> UpdateSeatAsync(SeatUpdateDTO seatUpdateDTO, int seatId);
-        Task<IEnumerable<SeatDTO>> GetSeatsByHallIdAsync (int hallId);
+        Task<IEnumerable<SeatDTO>> GetSeatsByRowIdAsync (int hallId);
         Task<IEnumerable<SeatDTO>> GetSeatsByShowTimeId(int showTimeId, SeatAvailability? seatAvailability = null);
 
     }

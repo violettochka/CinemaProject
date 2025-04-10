@@ -20,7 +20,8 @@ namespace ProjectCinema.MappingProfiles
                 .ForMember(dest => dest.BookingId, opt => opt.MapFrom(src => src.BookingId));
 
             //Create automapper for updating the payment
-            CreateMap<PaymentUpdateDTO, Payment>();
+            CreateMap<PaymentUpdateDTO, Payment>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); ;
         }
     }
 }

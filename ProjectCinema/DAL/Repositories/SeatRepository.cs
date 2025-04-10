@@ -22,10 +22,10 @@ namespace ProjectCinema.Repositories.Classes
             return await query.ToListAsync();
         }
 
-        public async Task<IEnumerable<Seat>> GetSeatsByHallIdAsync(int id)
+        public async Task<IEnumerable<Seat>> GetSeatsByRowIdAsync(int id)
         {
 
-            return await _dbContext.Seats.AsNoTracking().Where(s => s.HallId == id).ToListAsync();
+            return await _dbContext.Seats.AsNoTracking().Where(s => s.RowId == id).ToListAsync();
 
         }
     }

@@ -19,7 +19,8 @@ namespace ProjectCinema.MappingProfiles
             CreateMap<MovieCreateDTO, Movie>();
 
             //Create automapper for updating the movie
-            CreateMap<MovieUpdateDTO, Movie>();
+            CreateMap<MovieUpdateDTO, Movie>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ProjectCinema.BLL.Interfaces;
+using ProjectCinema.Entities;
 using ProjectCinema.Repositories.Interfaces;
 
 namespace ProjectCinema.BLL.Services
@@ -27,7 +28,13 @@ namespace ProjectCinema.BLL.Services
         public async Task<TDTO> GetByIdAsync(int entityId)
         {
 
+
             TEntity etity = await _genericRepository.GetByIdAsync(entityId);
+
+            if (etity == null)
+            {
+                throw new KeyNotFoundException($"Entity with id equals {entityId} does not exists");
+            }
 
             return _mapper.Map<TDTO>(etity);
 

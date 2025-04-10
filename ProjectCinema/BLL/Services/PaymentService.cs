@@ -12,42 +12,15 @@ namespace ProjectCinema.BLL.Services
     {
         private readonly IMapper _mapper;
         private readonly IPaymentRepository _paymanentRepository;   
-        private readonly IBookingService _bookingService;
         public PaymentService(IPaymentRepository paymanentRepository, 
-                              IMapper mapper,
-                              IBookingService bookingService) : base(paymanentRepository, mapper)
+                              IMapper mapper) : base(paymanentRepository, mapper)
         {
             _paymanentRepository = paymanentRepository;
             _mapper = mapper;
-            _bookingService = bookingService;
         }
 
         public async Task<PaymentDTO> CreatePaymentAsync(PaymentCreateDTO paymentCreateDTO)
         {
-
-            BookingDTO booking = await _bookingService.GetByIdAsync(paymentCreateDTO.BookingId);
-
-            if(booking == null)
-            {
-                throw new Exception($"The specified booking was not found");
-            }
-
-            if (!Enum.IsDefined(typeof(PaymentMethod), paymentCreateDTO.PeymentMethod))
-            {
-                throw new ArgumentException("The specified payment method is incorrect.");
-            }
-
-            Payment existingPayment = await _paymanentRepository.GetByIdAsync(paymentCreateDTO.BookingId);
-
-            if (existingPayment != null && existingPayment.PaymentStatus == PaymentStatus.Success)
-            {
-                throw new InvalidOperationException("There is already a successful payment for this booking.");
-            }
-
-            if(paymentCreateDTO.AmountPaid != booking.TotalPrice)
-            {
-                throw new ArgumentException($"Payment amount ({paymentCreateDTO.AmountPaid}) must match the booking amount ({booking.TotalPrice}).");
-            }
 
             Payment payment = _mapper.Map<Payment>(paymentCreateDTO);
             payment.PaymentStatus = PaymentStatus.Success;

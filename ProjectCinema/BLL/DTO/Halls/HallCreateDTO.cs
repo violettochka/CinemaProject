@@ -7,14 +7,8 @@ namespace ProjectCinema.BLL.DTO.Halls
 {
     public class HallCreateDTO
     {
-
-        [Required]
-        [StringLength(256, MinimumLength = 2)]
-        public string? HallName { get; set; }
-        [Required]
-        [Range(1, int.MaxValue)]
-        public int Capacity { get; set; }
-        [Required]
+        public required string HallName { get; set; }
+        public int RowCount { get; set; }
         public int CinemaId { get; set; }
     }
 }

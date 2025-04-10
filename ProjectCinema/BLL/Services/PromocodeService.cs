@@ -30,17 +30,6 @@ namespace ProjectCinema.BLL.Services
                 throw new ArgumentException("A promocode with this unique code already exists.");
             }
 
-            if (promocodeCreateDTO.ExpiryDate <= DateTime.Now)
-            {
-                throw new ArgumentException("The expiration date of the promo code must be in the future.");
-            }
-
-            if (!Enum.IsDefined(typeof(PromocodeType), promocodeCreateDTO.PromocodeType))
-            {
-                throw new ArgumentException("Invalid promocode type.");
-            }
-
-
             Promocode promocode = _mapper.Map<Promocode>(promocodeCreateDTO);
             promocode.IsActive = true;
             promocode.CreatedAdt = DateTime.Now;
@@ -56,7 +45,7 @@ namespace ProjectCinema.BLL.Services
         {
             if (await _promocodeRepository.GetByIdAsync(promocodeId) == null)
             {
-                throw new ArgumentException ($"Promocode with id equal {promocodeId} does not exists");
+                throw new KeyNotFoundException($"Promocode with id equal {promocodeId} does not exists");
             }
 
             Promocode promocode = await _promocodeRepository.GetByIdAsync(promocodeId);
@@ -78,7 +67,7 @@ namespace ProjectCinema.BLL.Services
 
             if (await _promocodeRepository.GetByIdAsync(promocodeId) == null)
             {
-                throw new ArgumentException($"Promocode with id equal {promocodeId} does not exists");
+                throw new KeyNotFoundException($"Promocode with id equal {promocodeId} does not exists");
             }
 
             Promocode promocode = await _promocodeRepository.GetByIdAsync(promocodeId);

@@ -26,7 +26,8 @@ namespace ProjectCinema.MappingProfiles
                 .ForMember(dest => dest.MovieScreeningId, opt => opt.MapFrom(src => src.MovieScreeningId));
 
             //Create automapper for updating the showtime
-            CreateMap<ShowTimeUpdateDTO, ShowTime>();
+            CreateMap<ShowTimeUpdateDTO, ShowTime>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); ;
         }
     }
 }

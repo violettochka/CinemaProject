@@ -18,14 +18,15 @@ namespace ProjectCinema.MappingProfiles
             CreateMap<Hall, HallDetailsDTO>()
                 .ForMember(dest => dest.Cinema, opt => opt.MapFrom(src => src.Cinema))
                 .ForMember(dest => dest.ShowTimes, opt => opt.MapFrom(src => src.ShowTimes))
-                .ForMember(dest => dest.Seats, opt => opt.MapFrom(src => src.Seats));
+                .ForMember(dest => dest.Rows, opt => opt.MapFrom(src => src.Rows));
 
             // Create automapper for creation the hall
             CreateMap<HallCreateDTO, Hall>()
                 .ForMember(dest => dest.CinemaId, opt => opt.MapFrom(src => src.CinemaId));
 
             // Create automapper for updating the hall
-            CreateMap<HallUpdateDTO, Hall>();
+            CreateMap<HallUpdateDTO, Hall>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); ;
 
         }
     }

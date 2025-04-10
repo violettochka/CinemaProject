@@ -8,6 +8,6 @@ namespace ProjectCinema.BLL.Interfaces
     {
         Task<CinemaDetailsDTO> GetCinemaDetailsAsync(int id);
         Task<CinemaDTO> CreateAsync(CinemaCreateDTO cinemaDTO);
-        Task<CinemaDTO> UpdateAsync(int id, CinemaDTO cinemaDTO);
+        Task<CinemaDTO> UpdateAsync(int id, CinemaUpdateDTO cinemaDTO);
     }
 }

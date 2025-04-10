@@ -8,8 +8,8 @@ namespace ProjectCinema.BLL.DTO.Halls
     public class HallDTO
     {
         public int HallId { get; set; }
-        public string HallName { get; set; }
-        public int Capacity { get; set; }
+        public string? HallName { get; set; }
+        public int RowCount { get; set; }
         public HallAvailability HallAvailability { get; set; }
 
     }

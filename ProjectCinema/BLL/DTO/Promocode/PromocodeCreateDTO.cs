@@ -6,12 +6,10 @@ namespace ProjectCinema.BLL.DTO.Promocode
 {
     public class PromocodeCreateDTO
     {
-        [Required]
-        public string? UniqueCode { get; set; }
-        [Required]
+        public required string UniqueCode { get; set; }
         public PromocodeType PromocodeType { get; set; }
-        public decimal? PromocodeAmount { get; set; }
-        public DateTime? ExpiryDate { get; set; }
+        public decimal PromocodeAmount { get; set; }
+        public DateTime ExpiryDate { get; set; }
         public string? Condition { get; set; }
     }
 }

@@ -17,6 +17,7 @@ namespace ProjectCinema.Data
         public DbSet<ShowTime> ShowTimes { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
+        public DbSet<Row> Rows { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -111,9 +112,15 @@ namespace ProjectCinema.Data
 
             // configuration one-to-many relationship between entities Hall and Seat
             modelBuilder.Entity<Seat>()
-                .HasOne(s => s.Hall)
-                .WithMany(h => h.Seats)
-                .HasForeignKey(s => s.HallId)
+                .HasOne(s => s.Row)
+                .WithMany(r => r.Seats)
+                .HasForeignKey(s => s.RowId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Row>()
+                .HasOne(r => r.Hall)
+                .WithMany(h => h.Rows)
+                .HasForeignKey(h => h.HallId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
 

@@ -16,49 +16,28 @@ namespace ProjectCinema.BLL.Services
         private readonly IMapper _mapper;
         private readonly ISeatRepository _seatRepository;
         private readonly ITicketService _ticketService;
-        private readonly IHallService _hallService;
         private readonly IShowTimeService _showTimeService;
-
-        public SeatService(ISeatRepository seatRepository, 
-                           IMapper mapper, 
-                           ITicketService ticketService, 
+        private readonly IRowService _rowService;
+        private readonly IHallService _hallService;
+        public SeatService(ISeatRepository seatRepository,
+                           IMapper mapper,
+                           ITicketService ticketService,
                            IHallService hallService,
-                           IShowTimeService showTimeService) 
+                           IShowTimeService showTimeService,
+                           IRowService rowService)
                            : base(seatRepository, mapper)
         {
 
             _mapper = mapper;
             _seatRepository = seatRepository;
             _ticketService = ticketService;
-            _hallService = hallService;
             _showTimeService = showTimeService;
-
+            _rowService = rowService;
+            _hallService = hallService;
         }
 
         public async Task<SeatDTO> CreateSeatAsync(SeatCreateDTO seatCreateDTO)
-        {
-
-            if( await _hallService.GetByIdAsync(seatCreateDTO.HallId) == null)
-            {
-                throw new Exception($"Hall with id equal {seatCreateDTO.HallId} does not exists");
-            }
-
-            var existingSeat = (await _seatRepository.GetAllAsync())
-                                                     .FirstOrDefault(s => s.HallId == seatCreateDTO.HallId
-                                                      && s.RowNumber == seatCreateDTO.RowNumber
-                                                      && s.SeatNumber == seatCreateDTO.SeatNumber);
-
-
-            if (existingSeat != null)
-            {
-                throw new InvalidOperationException($"Seat number {seatCreateDTO.SeatNumber} in row {seatCreateDTO.RowNumber} already exists in this hall.");
-            }
-
-            // 4. Проверка корректности типа сиденья
-            if (!Enum.IsDefined(typeof(SeatType), seatCreateDTO.SeatType))
-            {
-                throw new ArgumentException("Incorrect seat type.");
-            }
+        { 
 
             var seat = _mapper.Map<Seat>(seatCreateDTO);
             seat.CreatedAt = DateTime.Now;
@@ -75,7 +54,7 @@ namespace ProjectCinema.BLL.Services
 
             if( await _seatRepository.GetByIdAsync(seatId) == null )
             {
-                throw new InvalidOperationException($"Seat with id equal {seatId} does not exists");
+                throw new KeyNotFoundException($"Seat with id equal {seatId} does not exists");
             }
             
             Seat seat = await _seatRepository.GetByIdAsync(seatId);
@@ -87,40 +66,33 @@ namespace ProjectCinema.BLL.Services
 
         }
 
-        public async Task<IEnumerable<SeatDTO>> GetSeatsByHallIdAsync(int hallId)
+        public async Task<IEnumerable<SeatDTO>> GetSeatsByRowIdAsync(int rowId)
         {
-            if(await _hallService.GetByIdAsync(hallId) == null)
+            if (await _rowService.GetByIdAsync(rowId) == null)
             {
-                throw new InvalidOperationException($"Hall with id equal {hallId} does not exists");
+                throw new KeyNotFoundException($"Hall with id equal {rowId} does not exists");
             }
 
-            IEnumerable<Seat>? seats = await _seatRepository.GetSeatsByHallIdAsync(hallId);
+            IEnumerable<Seat>? seats = await _seatRepository.GetSeatsByRowIdAsync(rowId);
 
             return _mapper.Map<IEnumerable<SeatDTO>>(seats);
 
         }
 
-        public async Task<IEnumerable<SeatDTO>> GetSeatsByShowTimeId(int showTimeId, SeatAvailability? seatAvailability = null)
-        {
+        //public async Task<IEnumerable<SeatDTO>> GetSeatsByShowTimeId(int showTimeId, SeatAvailability? seatAvailability = null)
+        //{
 
-            ShowTimeDetailsDTO showTime = await _showTimeService.GetShowTimeDetailsAsync(showTimeId);
+        //    ShowTimeDetailsDTO showTime = await _showTimeService.GetShowTimeDetailsAsync(showTimeId);
+
+        //    IEnumerable<HallDetailsDTO> hallDetailsDTOs = await _hallService.G
 
 
-            if (showTime == null)
-            {
-                throw new Exception($"ShowTime with id equal {showTimeId} does not exist");
-            }
+        //    if (showTime == null)
+        //    {
+        //        throw new Exception($"ShowTime with id equal {showTimeId} does not exist");
+        //    }
 
-            List<SeatDTO> seats = (await GetSeatsByHallIdAsync(showTime.HallId)).ToList();
-
-            if (seatAvailability.HasValue)
-            {
-                seats = seats.Where(s => s.SeatAvailability == seatAvailability.Value).ToList();
-            }
-
-            return seats;
-
-        }
+        //}
 
         public async Task<SeatDTO> UpdateSeatAsync(SeatUpdateDTO seatUpdateDTO, int seatId)
         {

@@ -28,17 +28,9 @@ namespace ProjectCinema.MappingProfiles
                 .ForMember(dest => dest.CinemaId, opt => opt.MapFrom(src => src.CinemaId));
 
             // Create automapper for updating the moviescreening
-            CreateMap<MovieScreeningUpdateDTO, MovieScreening>();
+            CreateMap<MovieScreeningUpdateDTO, MovieScreening>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); ;
 
         }
     }
 }
-//[ForeignKey("MovieId")]
-//public Movie Movie { get; set; }
-//[Required]
-//public int MovieId { get; set; }
-//[ForeignKey("CinemaId")]
-//public Cinema Cinema { get; set; }
-//[Required]
-//public int CinemaId { get; set; }
-//public ICollection<ShowTime> ShowTimes { get; set; }

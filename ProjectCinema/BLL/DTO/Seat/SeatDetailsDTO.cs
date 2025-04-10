@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using ProjectCinema.BLL.DTO.Halls;
 using ProjectCinema.BLL.DTO.Ticket;
+using ProjectCinema.BLL.DTO.Row;
 
 namespace ProjectCinema.BLL.DTO.Seat
 {
@@ -11,11 +12,10 @@ namespace ProjectCinema.BLL.DTO.Seat
     {
 
         public int SeatId { get; set; }
-        public int RowNumber { get; set; }
         public int SeatNumber { get; set; }
         public SeatAvailability SeatAvailability { get; set; }
         public SeatType SeatType { get; set; }
-        public HallDTO? Hall { get; set; }
+        public RowDTO? Row { get; set; }
         public ICollection<TicketDTO>? Tickets { get; set; }
     }
 }

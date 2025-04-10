@@ -9,13 +9,10 @@ namespace ProjectCinema.BLL.DTO.Seat
     {
         [Range(1, int.MaxValue)]
         [Required]
-        public int RowNumber { get; set; }
-        [Range(1, int.MaxValue)]
-        [Required]
         public int SeatNumber { get; set; }
         [Required]
         public SeatType SeatType { get; set; }
         [Required]
-        public int HallId { get; set; }
+        public int RowId { get; set; }
     }
 }

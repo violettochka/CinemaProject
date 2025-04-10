@@ -2,6 +2,7 @@
 using ProjectCinema.BLL.DTO.Movie;
 using ProjectCinema.BLL.DTO.MovieScreening;
 using ProjectCinema.BLL.Interfaces;
+using ProjectCinema.BLL.Interfaces.IMovieScreeningServices;
 using ProjectCinema.Data;
 using ProjectCinema.Entities;
 using ProjectCinema.Enums;
@@ -14,17 +15,17 @@ namespace ProjectCinema.BLL.Services
     public class MovieService : GenericService<MovieDTO, Movie>, IMovieService
     {
 
-        private readonly IMovieScreeningService _screeningService;
+        private readonly IMovieScreeningQueryService _screeningQueryService;
         private readonly IMovieRepository _movieRepository;
         private readonly IMapper _mapper;
         public MovieService(IMovieRepository movieRepository, 
                             IMapper mapper,
-                            IMovieScreeningService screeningService)
+                            IMovieScreeningQueryService screeningQueryService)
                             :base(movieRepository, mapper)
         {
             _mapper = mapper;
             _movieRepository = movieRepository;
-            _screeningService = screeningService;
+            _screeningQueryService = screeningQueryService;
 
         }
         public async Task<MovieDTO> CreateAsync(MovieCreateDTO movieDTO)
@@ -53,11 +54,11 @@ namespace ProjectCinema.BLL.Services
 
             if(_movieRepository.GetByIdAsync(id) == null)
             {
-                throw new Exception($"Movie id equal {id} does not exists");
+                throw new KeyNotFoundException($"Movie id equal {id} does not exists");
             }
 
             Movie movie = await _movieRepository.GetByIdAsync(id);
-            IEnumerable<MovieScreeningDTO> movieScreenings = await _screeningService.GetMovieSreeningsByMovieIdAsync(movie.MovieId);
+            IEnumerable<MovieScreeningDTO> movieScreenings = await _screeningQueryService.GetMovieSreeningsByMovieIdAsync(movie.MovieId);
             MovieDetailsDTO movieDto = _mapper.Map<MovieDetailsDTO>(movie);
             movieDto.MovieScreenings = movieScreenings.ToList();
 
@@ -70,7 +71,7 @@ namespace ProjectCinema.BLL.Services
 
             if (_movieRepository.GetByIdAsync(id) == null)
             {
-                throw new Exception($"Movie id equal {id} does not exists");
+                throw new KeyNotFoundException($"Movie id equal {id} does not exists");
             }
 
             Movie movie = await _movieRepository.GetByIdAsync(id);

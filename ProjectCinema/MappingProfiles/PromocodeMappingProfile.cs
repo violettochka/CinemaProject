@@ -19,7 +19,8 @@ namespace ProjectCinema.MappingProfiles
             CreateMap<PromocodeCreateDTO, Promocode>();
 
             //Create automapper for updating the promocode
-            CreateMap<PromocodeUpdateDTO, Promocode>();
+            CreateMap<PromocodeUpdateDTO, Promocode>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); ;
         }
     }
 }

@@ -15,15 +15,16 @@ namespace ProjectCinema.MappingProfiles
 
             //Create automapper for details seat info
             CreateMap<Seat, SeatDetailsDTO>()
-                .ForMember(dest => dest.Hall, opt => opt.MapFrom(src => src.Hall))
+                .ForMember(dest => dest.Row, opt => opt.MapFrom(src => src.Row))
                 .ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src.Tickets));
 
             //Create automapper for creation the seat
             CreateMap<SeatCreateDTO, Seat>()
-                .ForMember(dest => dest.HallId, opt => opt.MapFrom(src => src.HallId));
+                .ForMember(dest => dest.RowId, opt => opt.MapFrom(src => src.RowId));
 
             //Create automapper for updating the seat
-            CreateMap<SeatUpdateDTO, Seat>();
+            CreateMap<SeatUpdateDTO, Seat>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null)); ;
 
         }
     }

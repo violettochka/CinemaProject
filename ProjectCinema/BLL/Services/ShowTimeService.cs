@@ -4,6 +4,7 @@ using ProjectCinema.BLL.DTO.MovieScreening;
 using ProjectCinema.BLL.DTO.ShowTime;
 using ProjectCinema.BLL.DTO.Ticket;
 using ProjectCinema.BLL.Interfaces;
+using ProjectCinema.BLL.Interfaces.IMovieScreeningServices;
 using ProjectCinema.Entities;
 using ProjectCinema.Enums;
 using ProjectCinema.Repositories.Classes;
@@ -16,27 +17,29 @@ namespace ProjectCinema.BLL.Services
     {
         private readonly IMapper _mapper;
         private readonly IShowTimeRepository _showTimeRepository;
-        private readonly IMovieScreeningService _movieScreeningService;
+        private readonly IMovieScreeningQueryService _movieScreeningQueryService;
+        private readonly IMovieScreeningCrudService _movieScreeningCrudService;
         private readonly ITicketService _ticketService;
         private readonly IHallService _hallService;
         private readonly IMovieService _movieService;
 
         public ShowTimeService(IShowTimeRepository showTimeRepository, 
                                IMapper mapper,
-                               IMovieScreeningService movieScreeningService,
+                               IMovieScreeningQueryService movieScreeningQueryService,
                                ITicketService ticketService,
                                IHallService hallService,
-                               IMovieService movieService) 
+                               IMovieService movieService,
+                               IMovieScreeningCrudService movieScreeningCrudService)
                                : base(showTimeRepository, mapper)
         {
 
             _showTimeRepository = showTimeRepository;
             _mapper = mapper;
-            _movieScreeningService = movieScreeningService;
+            _movieScreeningQueryService = movieScreeningQueryService;
             _ticketService = ticketService;
             _hallService = hallService;
             _movieService = movieService;
-
+            _movieScreeningCrudService = movieScreeningCrudService;
         }
 
         public async Task<ShowTimeDTO> CreateShowTimeAsync(ShowTimeCreateDTO showTimeCreateDTO)
@@ -60,7 +63,7 @@ namespace ProjectCinema.BLL.Services
                 throw new ArgumentException($"Hall id equal {showTimeCreateDTO.HallId} does not exist");
             }
 
-            if (await _movieScreeningService.GetByIdAsync(showTimeCreateDTO.MovieScreeningId) == null)
+            if (await _movieScreeningCrudService.GetByIdAsync(showTimeCreateDTO.MovieScreeningId) == null)
             {
                 throw new ArgumentException($"MovieScreening is equal {showTimeCreateDTO.MovieScreeningId} does not exist");
             }
@@ -84,7 +87,7 @@ namespace ProjectCinema.BLL.Services
                 throw new ArgumentException($"Movie id equal {movieId} does not exist");
             }
 
-            IEnumerable<MovieScreeningDetailsDTO> movieScreenings = await _movieScreeningService.GetScreeningsDetailsByMovieIdAsync(movieId);
+            IEnumerable<MovieScreeningDetailsDTO> movieScreenings = await _movieScreeningQueryService.GetScreeningsDetailsByMovieIdAsync(movieId);
 
             if( movieScreenings == null )
             {
@@ -133,7 +136,7 @@ namespace ProjectCinema.BLL.Services
         public async Task<IEnumerable<ShowTimeDTO>> GetShowTimesByMovieScreeningIdAsync(int movieScreeningId)
         {
 
-            if(await _movieScreeningService.GetByIdAsync(movieScreeningId) == null)
+            if(await _movieScreeningCrudService.GetByIdAsync(movieScreeningId) == null)
             {
                 throw new Exception($"MovieScreening id equal {movieScreeningId} does not exist");
             }

@@ -2,6 +2,7 @@
 using ProjectCinema.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using ProjectCinema.BLL.DTO.Row;
 
 namespace ProjectCinema.BLL.DTO.Seat
 {
@@ -12,6 +13,7 @@ namespace ProjectCinema.BLL.DTO.Seat
         public SeatAvailability SeatAvailability { get; set; }
         public int SeatNumber { get; set; }
         public SeatType SeatType { get; set; }
+        public RowDTO? Row {  get; set; }
 
     }
 }

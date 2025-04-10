@@ -3,6 +3,7 @@ using ProjectCinema.BLL.DTO.Cinema;
 using ProjectCinema.BLL.DTO.Halls;
 using ProjectCinema.BLL.DTO.MovieScreening;
 using ProjectCinema.BLL.Interfaces;
+using ProjectCinema.BLL.Interfaces.IMovieScreeningServices;
 using ProjectCinema.Entities;
 using ProjectCinema.Repositories.Interfaces;
 using System.Reflection.Metadata;
@@ -14,19 +15,19 @@ namespace ProjectCinema.BLL.Services
     {
 
         private readonly ICinemaRepository _cinemaRepository;
-        private readonly IMovieScreeningService _movieScreeningService;
+        private readonly IMovieScreeningQueryService _movieScreeningQueryService;
         private readonly IHallService _hallService;
         private readonly IMapper _mapper;
 
-        public CinemaService(ICinemaRepository cinemaRepository, 
-                            IMovieScreeningService movieScreeningService,
+        public CinemaService(ICinemaRepository cinemaRepository,
+                            IMovieScreeningQueryService movieScreeningQueryService,
                             IHallService hallService, 
                             IMapper mapper)
                             :base(cinemaRepository, mapper)
         {
 
             _cinemaRepository = cinemaRepository;
-            _movieScreeningService = movieScreeningService;
+            _movieScreeningQueryService = movieScreeningQueryService;
             _hallService = hallService;
             _mapper = mapper;
 
@@ -50,10 +51,10 @@ namespace ProjectCinema.BLL.Services
 
             if(cinema == null)
             {
-                throw new InvalidOperationException($"Cinema with id equals {id} does not exists");
+                throw new KeyNotFoundException($"Cinema with id equals {id} does not exists");
             }
             
-            IEnumerable<MovieScreeningDTO> movieScreeings = await _movieScreeningService.GetScreeningsByCinemaIdAsync(id);
+            IEnumerable<MovieScreeningDTO> movieScreeings = await _movieScreeningQueryService.GetMovieSreeningsByMovieIdAsync(id);
             IEnumerable<HallDTO> halls = await _hallService.GetHallsByCinemaIdAsync(id);
 
             CinemaDetailsDTO cinemaDTO = _mapper.Map<CinemaDetailsDTO>(cinema);
@@ -63,14 +64,14 @@ namespace ProjectCinema.BLL.Services
             return cinemaDTO;
         }
 
-        public async Task<CinemaDTO> UpdateAsync(int id, CinemaDTO cinemaDTO)
+        public async Task<CinemaDTO> UpdateAsync(int id, CinemaUpdateDTO cinemaDTO)
         {
 
             Cinema? cinema = await _cinemaRepository.GetByIdAsync(id);
 
             if (cinema == null)
             {
-                throw new InvalidOperationException($"Cinema with id equals {id} does not exists");
+                throw new KeyNotFoundException($"Cinema with id equals {id} does not exists");
             }
 
             _mapper.Map(cinemaDTO, cinema);

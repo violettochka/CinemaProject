@@ -7,12 +7,8 @@ namespace ProjectCinema.BLL.DTO.MovieScreening
 {
     public class MovieScreeningUpdateDTO
     {
-        public int MovieScreeningId { get; set; }
-        [Required]
-        public DateTime StartDate { get; set; }
-        [Required]
-        public DateTime EndDate { get; set; }
-        [Required]
-        public MovieScreeningRelevance MovieScreeningRelevance { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public MovieScreeningRelevance? MovieScreeningRelevance { get; set; }
     }
 }

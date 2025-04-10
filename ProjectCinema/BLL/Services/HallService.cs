@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ProjectCinema.BLL.DTO.Halls;
+using ProjectCinema.BLL.DTO.Row;
 using ProjectCinema.BLL.DTO.Seat;
 using ProjectCinema.BLL.DTO.ShowTime;
 using ProjectCinema.BLL.Interfaces;
@@ -13,24 +14,24 @@ namespace ProjectCinema.BLL.Services
     {
         private readonly IHallRepository _hallRepository;
         private readonly IMapper _mapper;
-        private readonly ISeatService _seatService;
         private readonly IShowTimeService _showTimeService;
         private readonly ICinemaService _cinemaService;
+        private readonly IRowService _rowService;
 
         public HallService(IHallRepository hallRepository, 
-                           IMapper mapper, 
-                           ISeatService seatService, 
+                           IMapper mapper,
+                           ISeatService seatService,
                            IShowTimeService showTimeService,
-                           ICinemaService cinemaService) 
+                           ICinemaService cinemaService,
+                           IRowService rowService)
                            : base(hallRepository, mapper)
         {
 
             _hallRepository = hallRepository;
             _mapper = mapper;
-            _seatService = seatService;
             _showTimeService = showTimeService;
             _cinemaService = cinemaService;
-
+            _rowService = rowService;
         }
 
         public async Task<HallDTO> CreateHallAsync(HallCreateDTO hallCreateDTO)
@@ -53,14 +54,14 @@ namespace ProjectCinema.BLL.Services
 
             if(hall == null)
             {
-                throw new InvalidOperationException($"Hall with id equals {hallId} does not exists");
+                throw new KeyNotFoundException($"Hall with id equals {hallId} does not exists");
             }
 
-            IEnumerable<SeatDTO> seats = await _seatService.GetSeatsByHallIdAsync(hallId);
+            IEnumerable<RowDTO> rows = await _rowService.GetRowsByHallIdAsync(hallId);
             IEnumerable<ShowTimeDTO> showTimes = await _showTimeService.GetShowTimesByHallIdAsync(hallId);
 
             HallDetailsDTO hallDTO = _mapper.Map<HallDetailsDTO>(hall);
-            hallDTO.Seats = seats.ToList();
+            hallDTO.Rows  = rows.ToList();
             hallDTO.ShowTimes = showTimes.ToList();
 
             return hallDTO;
@@ -80,7 +81,7 @@ namespace ProjectCinema.BLL.Services
         {
             if(await _cinemaService.GetByIdAsync(cinemaId) == null)
             {
-                throw new InvalidOperationException($"Cinema with id equals {cinemaId} does not exists")
+                throw new KeyNotFoundException($"Cinema with id equals {cinemaId} does not exists");
             }
 
             IEnumerable<Hall> halls = await _hallRepository.GetHAllsByCinemaIdAsync(cinemaId);
@@ -96,7 +97,7 @@ namespace ProjectCinema.BLL.Services
 
             if (hall == null)
             {
-                throw new InvalidOperationException($"Hall with id equals {hallId} does not exists");
+                throw new KeyNotFoundException($"Hall with id equals {hallId} does not exists");
             }
 
             _mapper.Map(hallUpdateDTO, hall);

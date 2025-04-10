@@ -30,6 +30,5 @@ namespace ProjectCinema.Repositories.Classes
 
             return await query.ToListAsync();
         }
-
     }
 }
